@@ -9,20 +9,20 @@ import io, base64
 from .utils.predict import predict_image
 from datetime import datetime
 
-# ---- Kết nối MongoDB ----
-client = MongoClient(settings.MONGO_URI)
-db = client["history"]   # tên database
-history_col = db["prediction_history"]
+
+# ---- Hàm trả về collection trong MongoDB ----
+def get_history_collection():
+    client = MongoClient(settings.MONGO_URI)
+    db = client["history"]   # 👈 DB name (m nhớ tạo trong Mongo Atlas)
+    return db["prediction_history"]  # 👈 Collection name
 
 
 def image_to_list(file):
-    """Chuyển ảnh upload thành numpy list để lưu Mongo"""
     img = Image.open(file).convert("RGB")
     return np.array(img).tolist()
 
 
 def list_to_base64(img_list):
-    """Chuyển list numpy trong Mongo thành base64 để hiển thị lại"""
     img = Image.fromarray(np.array(img_list, dtype=np.uint8))
     buf = io.BytesIO()
     img.save(buf, format="PNG")
@@ -31,6 +31,8 @@ def list_to_base64(img_list):
 
 @login_required
 def dashboard_view(request):
+    history_col = get_history_collection()   # 👈 chỉ connect khi cần
+
     if request.method == "POST":
         action = request.POST.get("action")
 
@@ -54,11 +56,9 @@ def dashboard_view(request):
         elif request.POST.get("captured_image"):
             data_url = request.POST["captured_image"]
             try:
-                # data_url dạng: "data:image/png;base64,xxxx"
                 header, encoded = data_url.split(";base64,")
                 img_data = base64.b64decode(encoded)
 
-                # Dùng BytesIO để giả file
                 uploaded_file = io.BytesIO(img_data)
                 uploaded_file.name = "camera_capture.png"
             except Exception as e:
@@ -66,19 +66,15 @@ def dashboard_view(request):
 
         # --- Nếu có ảnh (dù từ file hay camera) ---
         if uploaded_file:
-            # Ảnh để lưu Mongo (list numpy)
             img_list = image_to_list(uploaded_file)
 
-            # Reset con trỏ file rồi đọc lại
             uploaded_file.seek(0)
             img_bytes = io.BytesIO(
                 uploaded_file.read() if hasattr(uploaded_file, "read") else uploaded_file.getvalue()
             )
 
-            # Gọi model dự đoán
             predicted_class, prob = predict_image(img_bytes)
 
-            # Lưu vào Mongo
             history_col.insert_one({
                 "user_id": request.user.id,
                 "image_list": img_list,
@@ -96,7 +92,7 @@ def dashboard_view(request):
     for doc in history_docs:
         base64_img = list_to_base64(doc["image_list"])
         history_list.append({
-            "id": str(doc["_id"]),   # 👈 để xoá từng record
+            "id": str(doc["_id"]),
             "predicted_class": doc["predicted_class"],
             "probability": doc["probability"],
             "image_base64": base64_img,
@@ -106,6 +102,7 @@ def dashboard_view(request):
     return render(request, "main_app/dashboard.html", {
         "history_list": history_list
     })
+
 
 
 
