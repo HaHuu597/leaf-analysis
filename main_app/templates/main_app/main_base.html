@@ -1,0 +1,72 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}LeafAI - Phân tích lá{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'main_app/css/main_app.css' %}">
+</head>
+<body>
+
+  <!-- ===== TOP BAR ===== -->
+  <div class="base-topbar-wrap">
+    <header class="base-topbar" role="banner">
+      <a class="base-brand" href="#" aria-label="LeafAI Home">
+        <span class="base-logo" aria-hidden="true">
+          <!-- Leaf icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.2 3.8C14.3 3.2 9.7 6.2 7.8 8.1 4.7 11.2 3.4 16.7 8.2 20.1c.5.3 1.1.6 1.8.8-1.8-2.1-2.6-5-2.1-7.7.9.6 2.1 1.1 3.5 1.3-1.9-1.9-2.2-4.8-2-6.8 2 .2 4.9-.1 6.8 1.8-.2-1.4-.7-2.6-1.3-3.5 2.7-.5 5.6.3 7.7 2.1-.2-.7-.5-1.3-.8-1.8C21.9 4.8 21.1 4.1 20.2 3.8Z" fill="#fff"/>
+          </svg>
+        </span>
+        <span>LeafAI</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="base-nav" aria-label="Chính">
+        <a href="#">Trang chủ</a>
+        <a href="#history">Lịch sử</a>
+        <a href="#guide">Hướng dẫn</a>
+        <a href="{% url 'logout' %}" aria-label="Đăng xuất">Đăng xuất</a>
+      </nav>
+
+      <!-- Hamburger -->
+      <button class="base-burger" id="base-burger" aria-label="Mở menu"
+        aria-haspopup="true" aria-controls="base-mobilePanel" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Mobile Panel -->
+    <div class="base-panel" id="base-mobilePanel" hidden>
+      <div class="base-scrim" data-close></div>
+      <div class="base-sheet" role="dialog" aria-modal="true" aria-label="Menu di động">
+        <div class="base-head"></div>
+        <nav aria-label="Di chuyển">
+          <a href="#home">Trang chủ</a>
+          <a href="#history">Lịch sử</a>
+          <a href="#guide">Hướng dẫn</a>
+          <a href="{% url 'logout' %}">Đăng xuất</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <main>
+        {% block content %}{% endblock %}
+  </main>
+
+  <script src="{% static 'main_app/js/main_app.js' %}"></script>
+
+
+</body>
+</html>
+
+
+

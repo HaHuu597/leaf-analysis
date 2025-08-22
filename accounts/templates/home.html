@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Trang chủ{% endblock %}
+
+{% block content %}
+<section class="hero" aria-labelledby="title">
+  <h1 id="title" class="title">Hệ thống phân tích lá mai</h1>
+  <p class="subtitle">
+    Giúp bạn phát hiện bệnh trên lá mai nhanh chóng và chính xác với công nghệ AI.
+  </p>
+  <div class="actions" style="justify-content:center; gap:12px;">
+    <a class="btn" href="#tinh-nang">Xem tính năng</a>
+    <a class="btn primary" href="{% url 'signup' %}">Bắt đầu ngay</a>
+  </div>
+
+  <div class="cards" id="tinh-nang">
+    <article class="card">
+      <h3>Phân tích nhanh</h3>
+      <p>Tải ảnh lá mai lên và nhận kết quả trong vài giây.</p>
+    </article>
+    <article class="card">
+      <h3>Phát hiện bệnh chính xác</h3>
+      <p>Áp dụng mô hình học sâu để phân loại bệnh.</p>
+    </article>
+    <article class="card">
+      <h3>Hỗ trợ chuyên gia</h3>
+      <p>Giúp nhà vườn và chuyên gia xử lý kịp thời.</p>
+    </article>
+    <article class="card">
+      <h3>Dễ sử dụng</h3>
+      <p>Giao diện thân thiện, hỗ trợ mọi thiết bị.</p>
+    </article>
+  </div>
+</section>
+{% endblock %}
+

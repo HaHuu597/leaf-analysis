@@ -1,0 +1,98 @@
+{% extends 'main_app/main_base.html' %}
+{% load static %}
+
+{% block title %}LeafAI - Phân tích lá{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'main_app/css/dashboard.css' %}">
+<script src="{% static 'main_app/js/dashboard.js' %}"></script>
+
+<div class="dashboard-container">
+  <h2 class="title">📊 Dashboard</h2>
+
+  <!-- Upload Form -->
+  <section class="upload-box">
+    <h3>Tải ảnh để dự đoán</h3>
+    <form method="post" enctype="multipart/form-data" class="upload-form">
+      {% csrf_token %}
+      <!-- chọn file từ máy -->
+      <input type="file" name="image" id="imageInput" accept="image/*" capture="environment">
+      <button type="submit" class="btn">🚀 Dự đoán</button>
+    </form>
+
+    <hr>
+
+    <!-- Camera -->
+     <div class="camera-box">
+  <button type="button" id="startCamera" class="btn">📷 Mở camera</button>
+  <video id="camera" autoplay playsinline style="display:none; width:300px; border:1px solid #ddd; margin-top:10px;"></video>
+  <button type="button" id="captureBtn" class="btn" style="display:none; margin-top:10px;">📸 Chụp ảnh</button>
+  <canvas id="canvas" style="display:none;"></canvas>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" id="cameraForm">
+    {% csrf_token %}
+    <input type="hidden" name="captured_image" id="capturedImage">
+    <button type="submit" class="btn">🚀 Dự đoán ảnh chụp</button>
+  </form>
+
+  </section>
+
+  <!-- Kết quả mới nhất -->
+  {% if history_list %}
+    <div class="result-box">
+        <h3>Kết quả dự đoán mới nhất:</h3>
+        <p><b>Bệnh:</b> <span class="highlight">{{ history_list.0.predicted_class }}</span></p>
+        <p><b>Xác suất:</b> <span class="highlight">{{ history_list.0.probability }}%</span></p>
+        <div class="preview">
+            <img src="data:image/png;base64,{{ history_list.0.image_base64 }}" class="result-img">
+        </div>
+    </div>
+  {% endif %}
+ <section id="history">
+  <h3>Lịch sử dự đoán</h3>
+
+  {% if history_list %}
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Ảnh</th>
+            <th>Kết quả</th>
+            <th>Xác suất</th>
+            <th>Thời gian</th>
+            <th>Hành động</th>  <!-- 👈 thêm cột hành động -->
+          </tr>
+        </thead>
+        <tbody>
+        {% for h in history_list %}
+          <tr>
+            <td><img src="data:image/png;base64,{{ h.image_base64 }}" class="thumb"></td>
+            <td>{{ h.predicted_class }}</td>
+            <td>{{ h.probability }}%</td>
+            <td>{{ h.created_at }}</td>
+            <td>
+              <!-- Nút xoá -->
+              <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_one">
+                <input type="hidden" name="record_id" value="{{ h.id }}">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa dự đoán này?')">
+                  🗑 Xóa
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="empty">Chưa có lịch sử dự đoán nào.</p>
+  {% endif %}
+</section>
+
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Leaf Analysis{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'accounts/css/style.css' %}">
+</head>
+<body>
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="{% url 'home' %}" class="brand">
+        <span class="logo"></span>
+        <span>Leaf Analysis</span>
+      </a>
+      <nav class="nav-links">
+        <a class="link" href="{% url 'home' %}">Home</a>
+        <a class="btn" href="{% url 'login' %}">Đăng nhập</a>
+        <a class="btn primary" href="{% url 'signup' %}">Đăng ký</a>
+        {% comment %} {% if user.is_authenticated %}
+          <a class="btn" href="{% url 'logout' %}">Đăng xuất</a>
+        {% else %}
+          <a class="btn" href="{% url 'login' %}">Đăng nhập</a>
+          <a class="btn primary" href="{% url 'signup' %}">Đăng ký</a>
+        {% endif %} {% endcomment %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="container">
+    © <span id="year"></span> · Made with ❤️
+  </footer>
+
+  <div class="toast" id="toast"></div>
+  {% if messages %}
+    {% for message in messages %}
+      <div class="django-msg" data-level="{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <script src="{% static 'js/script.js' %}?v=9"></script>
+</body>
+</html>
+
+

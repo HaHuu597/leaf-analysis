@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Đăng nhập{% endblock %}
+
+{% block content %}
+<section class="auth-form">
+  <h2>Đăng nhập</h2>
+  <form method="POST" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div class="field">
+      <label for="loginEmail">Email</label>
+      <input class="input" type="email" id="loginEmail" name="username"
+             value="{{ form.username.value|default:'' }}" required>
+      {{ form.username.errors }}
+    </div>
+
+    <div class="field">
+      <label for="loginPass">Mật khẩu</label>
+      <input class="input" type="password" id="loginPass" name="password" required>
+      {{ form.password.errors }}
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn primary">Đăng nhập</button>
+    </div>
+  </form>
+  <p>Chưa có tài khoản? <a href="{% url 'signup' %}">Đăng ký ngay</a></p>
+</section>
+{% endblock %}
+
